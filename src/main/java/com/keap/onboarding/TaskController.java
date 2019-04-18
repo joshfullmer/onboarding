@@ -22,7 +22,7 @@ public class TaskController {
     // Check if accessToken was provided
     if (!taskService.hasValidAccessToken()) {
       Map<String, Object> response = new HashMap<>();
-      response.put("message", "401 Unauthorizedd");
+      response.put("message", "401 Unauthorized");
       return ResponseEntity
               .status(HttpStatus.UNAUTHORIZED)
               .body(response);
