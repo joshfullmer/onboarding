@@ -15,8 +15,18 @@ public class TaskController {
   private TaskService taskService;
 
   @RequestMapping(value="contact/{contactId}/task", method=RequestMethod.GET, produces="application/json")
-  public ResponseEntity getTasks(@PathVariable("contactId") String contactId) throws IOException {
-    taskService = new TaskService();
+  public ResponseEntity getTasks(@PathVariable("contactId") String contactId, String accessToken) throws IOException {
+
+    taskService = new TaskService(accessToken);
+
+    // Check if accessToken was provided
+    if (!taskService.hasValidAccessToken()) {
+      Map<String, Object> response = new HashMap<>();
+      response.put("message", "401 Unauthorized");
+      return ResponseEntity
+              .status(HttpStatus.UNAUTHORIZED)
+              .body(response);
+    }
 
     // Check if contactId is integer
     if (!taskService.isValidContactId(contactId)) {
@@ -28,11 +38,16 @@ public class TaskController {
     }
 
     // Check if contact exists by given id
-    if (!taskService.contactExists(contactId)) {
+    ResponseEntity contactExistsResponse = taskService.contactExists(contactId);
+    if (contactExistsResponse.getStatusCode() != HttpStatus.OK) {
       Map<String, Object> response = new HashMap<>();
-      response.put("message", "Contact doesn't exist");
+      if (contactExistsResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+        response.put("message", "Contact doesn't exist");
+      } else {
+        response.put("message", contactExistsResponse.getBody());
+      }
       return ResponseEntity
-          .status(HttpStatus.BAD_REQUEST)
+          .status(contactExistsResponse.getStatusCode())
           .body(response);
     }
 
@@ -46,8 +61,17 @@ public class TaskController {
 
   @RequestMapping(value="contact/{contactId}/task", method=RequestMethod.POST, produces="application/json", consumes="application/json")
   @ResponseBody
-  public ResponseEntity createTask(@PathVariable("contactId") String contactId, @RequestBody Map<String, Object> task) throws IOException {
-    taskService = new TaskService();
+  public ResponseEntity createTask(@PathVariable("contactId") String contactId, @RequestBody Map<String, Object> task, String accessToken) throws IOException {
+    taskService = new TaskService(accessToken);
+
+    // Check if accessToken was provided
+    if (!taskService.hasValidAccessToken()) {
+      Map<String, Object> response = new HashMap<>();
+      response.put("message", "401 Unauthorized");
+      return ResponseEntity
+              .status(HttpStatus.UNAUTHORIZED)
+              .body(response);
+    }
 
     Map<String, Object> createdTask;
     try {

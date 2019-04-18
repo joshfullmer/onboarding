@@ -18,10 +18,18 @@ import org.springframework.web.client.RestTemplate;
 public class TaskService {
 
   private final String apiBaseURL = "https://api.infusionsoft.com/crm/rest/v1";
-  private final String accessToken = "bm4s5r6fs2dm4junbmkjsz68";
+  private final String accessToken;
 
   @Autowired
   RestTemplate restTemplate = new RestTemplate();
+
+  public TaskService(String accessToken) {
+    this.accessToken = accessToken;
+  }
+
+  public boolean hasValidAccessToken() {
+    return accessToken != null;
+  }
 
   public boolean isValidContactId(String contactId) {
     boolean isNumber = contactId.matches("^\\d+$");
@@ -34,7 +42,7 @@ public class TaskService {
     return isNumber && contactIdInt > 0;
   }
 
-  public boolean contactExists(String contactId) throws IOException {
+  public ResponseEntity<String> contactExists(String contactId) throws IOException {
     String urlString = apiBaseURL + "/contacts/" + contactId;
     HttpHeaders headers = new HttpHeaders();
     headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -47,10 +55,10 @@ public class TaskService {
     try {
       response = restTemplate.exchange(urlString, HttpMethod.GET, entity, String.class);
     } catch (HttpClientErrorException e) {
-      return false;
+      return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
     }
 
-    return response.getStatusCode() == HttpStatus.OK;
+    return response;
   }
 
   public Map<String, Object> getTasks(String contactId) throws IOException {
