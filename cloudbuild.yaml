@@ -2,5 +2,5 @@ steps:
 - name: 'gcr.io/cloud-builders/mvn'
   args: ['install']
 - name: 'gcr.io/cloud-builders/mvn'
-  args: ['appengine:build']
+  args: ['appengine:deploy']
 images: ['gcr.io/keap-onboarding/spring-boot']
