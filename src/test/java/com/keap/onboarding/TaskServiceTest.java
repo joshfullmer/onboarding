@@ -1,46 +1,48 @@
 package com.keap.onboarding;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TaskServiceTest {
 
-  @MockBean
-  private RestTemplate restTemplate;
+  private TaskService taskService;
+
+  @Before
+  public void setup() {
+    taskService = new TaskService();
+  }
 
   @Test
   public void testValidateContactId() {
-    assertTrue("'4' is a valid contact ID", TaskService.isValidContactId("4"));
-    assertFalse("'0' is an invalid contact ID", TaskService.isValidContactId("0"));
-    assertFalse("'four' is an invalid contact ID", TaskService.isValidContactId("four"));
+    assertTrue("'4' is a valid contact ID", taskService.isValidContactId("4"));
+    assertFalse("'0' is an invalid contact ID", taskService.isValidContactId("0"));
+    assertFalse("'four' is an invalid contact ID", taskService.isValidContactId("four"));
   }
 
   @Test
   public void testContactExists() throws IOException {
-    assertTrue("Contact exists by ID '4'", TaskService.contactExists("4"));
-    assertTrue("Contact exists by ID '1'", TaskService.contactExists("4"));
+    assertTrue("Contact exists by ID '4'", taskService.contactExists("4"));
+    assertTrue("Contact exists by ID '1'", taskService.contactExists("4"));
   }
 
   @Test
   public void testGetTasks() throws IOException {
-    Map<String, Object> tasksResponse1 = TaskService.getTasks("4");
-    Map<String, Object> tasksResponse2 = TaskService.getTasks("0");
+    Map<String, Object> tasksResponse1 = taskService.getTasks("4");
+    Map<String, Object> tasksResponse2 = taskService.getTasks("0");
     List<Object> tasks4 = (ArrayList<Object>) tasksResponse1.get("tasks");
     List<Object> allTasks = (ArrayList<Object>) tasksResponse2.get("tasks");
     assertTrue("Task response has list of tasks for contact ID 4", tasksResponse1.containsKey("tasks"));
@@ -57,7 +59,7 @@ public class TaskServiceTest {
     contact1.put("id", 4);
     task1.put("contact", contact1);
     task1.put("due_date", "2019-04-17T00:00:00Z");
-    Map<String, Object> createdTask1 = TaskService.createTask(contactId1, task1);
+    Map<String, Object> createdTask1 = taskService.createTask(contactId1, task1);
     assertTrue("Successfully creates task", createdTask1.containsKey("id"));
 
     // Test missing contact id
@@ -69,9 +71,9 @@ public class TaskServiceTest {
     task2.put("contact", contact2);
     task2.put("due_date", "2019-04-17T00:00:00Z");
     try {
-      TaskService.createTask(contactId2, task2);
+      taskService.createTask(contactId2, task2);
     } catch (HttpClientErrorException e) {
-      assertTrue("Recognize invalid contact ID", e.getStatusCode() == HttpStatus.BAD_REQUEST);
+      assertEquals("Recognize invalid contact ID", e.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 
     // Test non existent field
@@ -83,9 +85,9 @@ public class TaskServiceTest {
     task3.put("contact", contact3);
     task3.put("due_date", "2019-04-17T00:00:00Z");
     try {
-      TaskService.createTask(contactId3, task3);
+      taskService.createTask(contactId3, task3);
     } catch (HttpClientErrorException e) {
-      assertTrue("Reject fields not in IS task model", e.getStatusCode() == HttpStatus.BAD_REQUEST);
+      assertEquals("Reject fields not in IS task model", e.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 
     // Test missing required field
@@ -96,9 +98,9 @@ public class TaskServiceTest {
     task4.put("contact", contact4);
     task4.put("due_date", "2019-04-17T00:00:00Z");
     try {
-      TaskService.createTask(contactId4, task4);
+      taskService.createTask(contactId4, task4);
     } catch (HttpClientErrorException e) {
-      assertTrue("Reject requests missing required fields", e.getStatusCode() == HttpStatus.BAD_REQUEST);
+      assertEquals("Reject requests missing required fields", e.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
   }
 }

@@ -12,23 +12,23 @@ import org.springframework.web.client.HttpClientErrorException;
 @RestController
 public class TaskController {
 
-  private final String apiBaseURL = "https://api.infusionsoft.com/crm/rest/v1";
-  private final String accessToken = "vrqckgfbdfpb38avc9vzetxf";
+  private TaskService taskService;
 
   @RequestMapping(value="contact/{contactId}/task", method=RequestMethod.GET, produces="application/json")
   public ResponseEntity getTasks(@PathVariable("contactId") String contactId) throws IOException {
+    taskService = new TaskService();
 
     // Check if contactId is integer
-    if (!TaskService.isValidContactId(contactId)) {
+    if (!taskService.isValidContactId(contactId)) {
       Map<String, Object> response = new HashMap<>();
       response.put("message", "Contact Id must be a positive integer");
       return ResponseEntity
           .status(HttpStatus.BAD_REQUEST)
           .body(response);
-    };
+    }
 
     // Check if contact exists by given id
-    if (!TaskService.contactExists(contactId)) {
+    if (!taskService.contactExists(contactId)) {
       Map<String, Object> response = new HashMap<>();
       response.put("message", "Contact doesn't exist");
       return ResponseEntity
@@ -37,7 +37,7 @@ public class TaskController {
     }
 
     // Get list of tasks
-    Map<String, Object> taskResponse = TaskService.getTasks(contactId);
+    Map<String, Object> taskResponse = taskService.getTasks(contactId);
 
     return ResponseEntity
         .status(HttpStatus.OK)
@@ -47,9 +47,11 @@ public class TaskController {
   @RequestMapping(value="contact/{contactId}/task", method=RequestMethod.POST, produces="application/json", consumes="application/json")
   @ResponseBody
   public ResponseEntity createTask(@PathVariable("contactId") String contactId, @RequestBody Map<String, Object> task) throws IOException {
+    taskService = new TaskService();
+
     Map<String, Object> createdTask;
     try {
-      createdTask = TaskService.createTask(contactId, task);
+      createdTask = taskService.createTask(contactId, task);
     } catch (HttpClientErrorException e) {
       return ResponseEntity
           .status(e.getStatusCode())
