@@ -1,7 +1,15 @@
 steps:
-  - id: 'Stage app using mvn appengine plugin on mvn cloud build image'
+  - id: 'Build fat jar'
     name: 'gcr.io/cloud-builders/mvn'
-    args: ['package', 'appengine:stage']
-  - id: 'Deploy to app engine using gcloud image'
+    args: ['package']
+  - id: "Prepare staging directory"
+    name: 'ubuntu'
+    args: ['mkdir', 'deploy-build']
+  - name: 'ubuntu'
+    args: ['cp', 'src/main/appengine/app.yaml', 'deploy-build/']
+  - name: 'ubuntu'
+    args: ['cp', 'target/demo-0.0.1-SNAPSHOT.jar', 'deploy-build/']
+  - id: "Deploy to AppEngine"
     name: 'gcr.io/cloud-builders/gcloud'
-    args: ['app', 'deploy', 'target/appengine-staging/app.yaml']
+    args: ['app', 'deploy', 'deploy-build/']
+timeout: '1600s'
