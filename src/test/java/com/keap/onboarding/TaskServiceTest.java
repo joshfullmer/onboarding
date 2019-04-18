@@ -23,7 +23,7 @@ public class TaskServiceTest {
 
   @Before
   public void setup() {
-    taskService = new TaskService();
+    taskService = new TaskService("bm4s5r6fs2dm4junbmkjsz68");
   }
 
   @Test
@@ -35,8 +35,8 @@ public class TaskServiceTest {
 
   @Test
   public void testContactExists() throws IOException {
-    assertTrue("Contact exists by ID '4'", taskService.contactExists("4"));
-    assertTrue("Contact exists by ID '1'", taskService.contactExists("4"));
+    assertTrue("Contact exists by ID '4'", taskService.contactExists("4").getStatusCode() == HttpStatus.OK);
+    assertTrue("Contact exists by ID '1'", taskService.contactExists("4").getStatusCode() == HttpStatus.OK);
   }
 
   @Test
