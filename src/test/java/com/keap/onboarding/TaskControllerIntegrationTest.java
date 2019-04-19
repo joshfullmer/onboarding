@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
@@ -22,13 +21,10 @@ public class TaskControllerIntegrationTest {
 
   private MockMvc mvc;
 
-  @Mock
-  TaskService taskService;
-
   @InjectMocks
   TaskController taskController;
 
-  String accessToken = "m3jecq5kdk9xnex85fe6x2yr";
+  private String accessToken = "m3jecq5kdk9xnex85fe6x2yr";
 
   @Before
   public void setup() {
