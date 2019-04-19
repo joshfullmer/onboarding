@@ -30,7 +30,6 @@ jobs:
 
       - run: mvn dependency:offline
       - run: mvn test
-      -
       - run: "mvn cobertura:cobertura"
       - run: "bash <(curl -s https://codecov.io/bash)"
 
