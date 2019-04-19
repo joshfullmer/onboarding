@@ -60,7 +60,7 @@ public class TaskControllerIntegrationTest {
   @Test
   public void testCreateTask() throws Exception {
     String task = "{\"title\":\"test\",\"contact\":{\"id\":4},\"due_date\":\"2019-04-18T00:00:00Z\"}";
-    MockHttpServletResponse response = mvc.perform(post("/contact/4/task?accessToken=bm4s5r6fs2dm4junbmkjsz68")
+    MockHttpServletResponse response = mvc.perform(post("/contact/4/task?accessToken=m3jecq5kdk9xnex85fe6x2yr")
             .contentType(MediaType.APPLICATION_JSON)
             .content(task))
             .andReturn().getResponse();
@@ -71,7 +71,7 @@ public class TaskControllerIntegrationTest {
   @Test
   public void testBadTaskContent() throws Exception {
     String task = "{\"contact\":{\"id\":4},\"due_date\":\"2019-04-18T00:00:00Z\"}";
-    MockHttpServletResponse response = mvc.perform(post("/contact/4/task?accessToken=bm4s5r6fs2dm4junbmkjsz68")
+    MockHttpServletResponse response = mvc.perform(post("/contact/4/task?accessToken=m3jecq5kdk9xnex85fe6x2yr")
             .contentType(MediaType.APPLICATION_JSON)
             .content(task))
             .andReturn().getResponse();
