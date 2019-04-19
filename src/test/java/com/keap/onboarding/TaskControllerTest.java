@@ -1,6 +1,7 @@
 package com.keap.onboarding;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
@@ -37,6 +38,14 @@ public class TaskControllerTest {
             .andReturn().getResponse();
 
     assertEquals("Response code is 401 UNAUTHORIZED", 401, response.getStatus());
+  }
+
+  @Test
+  public void testHasOldInvalidAccessToken() throws Exception {
+    MockHttpServletResponse response = mvc.perform(get("/contact/4/task?accessToken=bm4s5r6fs2dm4junbmkjsz68"))
+            .andReturn().getResponse();
+
+    assertEquals("Response code is 401 FORBIDDEN", 401, response.getStatus());
   }
 
   @Test

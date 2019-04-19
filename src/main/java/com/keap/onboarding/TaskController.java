@@ -41,7 +41,11 @@ public class TaskController {
     ResponseEntity contactExistsResponse = taskService.contactExists(contactId);
     if (contactExistsResponse.getStatusCode() != HttpStatus.OK) {
       Map<String, Object> response = new HashMap<>();
-      response.put("message", "Contact doesn't exist");
+      if (contactExistsResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+        response.put("message", "Contact doesn't exist");
+      } else {
+        response.put("message", contactExistsResponse.getBody());
+      }
       return ResponseEntity
           .status(contactExistsResponse.getStatusCode())
           .body(response);
@@ -73,9 +77,11 @@ public class TaskController {
     try {
       createdTask = taskService.createTask(contactId, task);
     } catch (HttpClientErrorException e) {
+      Map<String, Object> response = new HashMap<>();
+      response.put("message", e.getStatusText());
       return ResponseEntity
           .status(e.getStatusCode())
-          .body(e.getResponseBodyAsString());
+          .body(response);
     }
 
     return ResponseEntity

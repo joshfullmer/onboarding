@@ -32,7 +32,6 @@ public class TaskService {
   }
 
   public boolean isValidContactId(String contactId) {
-    boolean isNumber = contactId.matches("^\\d+$");
     int contactIdInt;
     try {
       contactIdInt = Integer.parseInt(contactId);
