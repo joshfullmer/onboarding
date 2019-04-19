@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 @WebMvcTest(TaskController.class)
-public class TaskControllerIntegrationTest {
+public class TaskControllerTest {
 
   private MockMvc mvc;
 
@@ -29,6 +29,14 @@ public class TaskControllerIntegrationTest {
   @Before
   public void setup() {
     mvc = MockMvcBuilders.standaloneSetup(taskController).build();
+  }
+
+  @Test
+  public void testHasValidAccessTokenGetTask() throws Exception {
+    MockHttpServletResponse response = mvc.perform(get("/contact/4/task"))
+            .andReturn().getResponse();
+
+    assertEquals("Response code is 401 UNAUTHORIZED", 401, response.getStatus());
   }
 
   @Test
@@ -49,10 +57,10 @@ public class TaskControllerIntegrationTest {
 
   @Test
   public void testNonExistentContactId() throws Exception {
-    MockHttpServletResponse response = mvc.perform(get("/contact/0/task?accessToken=" + accessToken))
+    MockHttpServletResponse response = mvc.perform(get("/contact/3/task?accessToken=" + accessToken))
             .andReturn().getResponse();
 
-    assertEquals("Response code is 400 BAD REQUEST", 400, response.getStatus());
+    assertEquals("Response code is 404 NOT FOUND", 404, response.getStatus());
   }
 
   @Test
@@ -75,6 +83,15 @@ public class TaskControllerIntegrationTest {
             .andReturn().getResponse();
 
     assertEquals("Response code is 400 BAD REQUEST", 400, response.getStatus());
+  }
+
+  @Test
+  public void testHasValidAccessTokenCreateTask() throws Exception {
+    String task = "{\"title\":\"test\",\"contact\":{\"id\":4},\"due_date\":\"2019-04-18T00:00:00Z\"}";
+    MockHttpServletResponse response = mvc.perform(post("/contact/4/task")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(task))
+            .andReturn().getResponse();
   }
 
 }

@@ -27,7 +27,7 @@ jobs:
             - v1-dependencies-{{ checksum "pom.xml" }}
 
       - run: mvn dependency:go-offline
-      - run: mvn clean test
+      - run: mvn test
       - run: "bash <(curl -s https://codecov.io/bash)"
 
       - save_cache:

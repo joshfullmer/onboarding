@@ -39,7 +39,7 @@ public class TaskService {
     } catch (NumberFormatException e) {
       return false;
     }
-    return isNumber && contactIdInt > 0;
+    return contactIdInt > 0;
   }
 
   public ResponseEntity<String> contactExists(String contactId) throws IOException {

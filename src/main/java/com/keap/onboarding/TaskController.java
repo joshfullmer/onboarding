@@ -41,11 +41,7 @@ public class TaskController {
     ResponseEntity contactExistsResponse = taskService.contactExists(contactId);
     if (contactExistsResponse.getStatusCode() != HttpStatus.OK) {
       Map<String, Object> response = new HashMap<>();
-      if (contactExistsResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-        response.put("message", "Contact doesn't exist");
-      } else {
-        response.put("message", contactExistsResponse.getBody());
-      }
+      response.put("message", "Contact doesn't exist");
       return ResponseEntity
           .status(contactExistsResponse.getStatusCode())
           .body(response);
