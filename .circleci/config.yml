@@ -28,7 +28,7 @@ jobs:
 
       - run: mvn dependency:go-offline
       - run: "mvn -o surefire:test"
-      - run: "mvn cobertura:cobertura"
+      - run: "mvn jacoco:report"
       - run: "bash <(curl -s https://codecov.io/bash)"
 
       - save_cache:
