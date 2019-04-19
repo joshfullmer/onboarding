@@ -35,7 +35,7 @@ public class TaskControllerIntegrationTest {
 
   @Test
   public void getTaskListGivenContactId() throws Exception {
-    MockHttpServletResponse response = mvc.perform(get("/contact/4/task?accessToken=bm4s5r6fs2dm4junbmkjsz68"))
+    MockHttpServletResponse response = mvc.perform(get("/contact/4/task?accessToken=m3jecq5kdk9xnex85fe6x2yr"))
             .andReturn().getResponse();
 
     assertEquals("Response code is 200 OK", 200, response.getStatus());
@@ -43,7 +43,7 @@ public class TaskControllerIntegrationTest {
 
   @Test
   public void testBadContactId() throws Exception {
-    MockHttpServletResponse response = mvc.perform(get("/contact/four/task?accessToken=bm4s5r6fs2dm4junbmkjsz68"))
+    MockHttpServletResponse response = mvc.perform(get("/contact/four/task?accessToken=m3jecq5kdk9xnex85fe6x2yr"))
             .andReturn().getResponse();
 
     assertEquals("Response code is 400 BAD REQUEST", 400, response.getStatus());
@@ -51,7 +51,7 @@ public class TaskControllerIntegrationTest {
 
   @Test
   public void testNonExistentContactId() throws Exception {
-    MockHttpServletResponse response = mvc.perform(get("/contact/0/task?accessToken=bm4s5r6fs2dm4junbmkjsz68"))
+    MockHttpServletResponse response = mvc.perform(get("/contact/0/task?accessToken=m3jecq5kdk9xnex85fe6x2yr"))
             .andReturn().getResponse();
 
     assertEquals("Response code is 400 BAD REQUEST", 400, response.getStatus());
