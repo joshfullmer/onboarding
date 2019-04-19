@@ -28,12 +28,15 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "pom.xml" }}
 
-      - run: mvn dependency:go-offline
+      - run: mvn install
+      - run: mvn test
+      - run: "mvn cobertura:cobertura"
+      - run: "bash <(curl -s https://codecov.io/bash)"
 
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
-      - store_test_results:
-          path: target/surefire-reports
+      - store-artifacts:
+          path: target
